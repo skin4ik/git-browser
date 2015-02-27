@@ -1,0 +1,48 @@
+<!--<pre>--><?php //print_r($this->userInfo);exit;?><!--</pre>-->
+<div class="row">
+    <div class="col-md-12 well">
+
+        <?php if ($this->response) { ?>
+
+            <div class="col-md-3"></div>
+
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <div class="col-xs-5 col-md-5">
+                        <a href="#" class="thumbnail">
+                            <img src="<?= $this->userInfo['avatar_url'] ?>">
+                        </a>
+                        <?php if ($this->likes[$this->userInfo['id']][0] == \Application\Model\Likes::STATUS_UNLIKE) { ?>
+                            <span class="like-section"><a data-target-id="<?=$this->userInfo['id'] ?>" data-type-like="<?=\Application\Model\Likes::TYPE_LIKE_USER?>" data-status="<?= $this->likes[$this->userInfo['id']][0] ?>"
+                                                          class="like btn btn-xs btn-success col-md-12 col-xs-12">
+                                    <span class="glyphicon glyphicon-thumbs-up"></span> Like</a></span>
+                        <?php } elseif ($this->likes[$this->userInfo['id']][0] == \Application\Model\Likes::STATUS_LIKE) { ?>
+                            <span class="like-section"><a data-target-id="<?=$this->userInfo['id'] ?>" data-type-like="<?=\Application\Model\Likes::TYPE_LIKE_USER?>" data-status="<?= $this->likes[$this->userInfo['id']][0] ?>"
+                                                          class="like btn btn-xs btn-danger col-md-12 col-xs-12">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span> unLike</a></span>
+                        <?php } ?>
+                    </div>
+                    <div class="col-md-7">
+                        <h3><strong><?= $this->userInfo['name'] ?></strong></h3>
+                        <h5><?= $this->userInfo['login'] ?></h5>
+
+                        <p>Company: <?= $this->userInfo['company'] ?></p>
+
+                        <p>Blog: <?= $this->userInfo['blog'] ?></p>
+
+                        <p>Followers: <?= $this->userInfo['followers'] ?></p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-12">
+
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+
+        <?php } ?>
+    </div>
+</div>

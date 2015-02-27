@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="well">
+        <div class="panel-body">
+            <div class="col-md-5">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Project</div>
+                    <div class="panel-body">
+                        <div class="padding-left-30">
+                            <h3><strong>Name: </strong><?= $this->repositoryInfo['full_name']; ?></h3>
+
+                            <p><strong>Description: </strong><?= $this->repositoryInfo['description']; ?></p>
+
+                            <p><strong>Watchers: </strong><?= $this->repositoryInfo['watchers']; ?></p>
+
+                            <p><strong>Forks: </strong><?= $this->repositoryInfo['forks']; ?></p>
+
+                            <p><strong>Open issues: </strong><?= $this->repositoryInfo['open_issues_count']; ?></p>
+
+                            <p><strong>Homepage: </strong><a href="<?= $this->repositoryInfo['homepage']; ?>"
+                                                             target="_blank"><?= $this->repositoryInfo['homepage']; ?></a>
+                            </p>
+
+                            <p><strong>GitHub repository: </strong><a href="<?= $this->repositoryInfo['html_url']; ?>"
+                                                                      target="_blank"><?= $this->repositoryInfo['html_url']; ?></a>
+                            </p>
+
+                            <p><strong>Created at: </strong><?= $this->repositoryInfo['created_at']; ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Contributors</div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <?php foreach ($this->contributors as $contributor): ?>
+                                <p class="col-md-6 col-xs-6">
+                                    <a href="<?= $this->url('user-info', array('login' => $contributor['login'])); ?>"
+                                       class="col-md-8 col-xs-8">
+                                        <span class="contributors-name"><?= $contributor['login']; ?></span>
+                                    </a>
+
+                                    <?php if ($this->likes[$contributor['id']][0] == \Application\Model\Likes::STATUS_UNLIKE) { ?>
+                                    <span class="like-section"><a data-target-id="<?=$contributor['id'] ?>" data-type-like="<?=\Application\Model\Likes::TYPE_LIKE_USER?>" data-status="<?= $this->likes[$contributor['id']][0] ?>"
+                                           class="like btn btn-xs btn-success col-md-4 col-xs-4">
+                                            <span class="glyphicon glyphicon-thumbs-up"></span> Like</a></span>
+                                    <?php } elseif ($this->likes[$contributor['id']][0] == \Application\Model\Likes::STATUS_LIKE) { ?>
+                                        <span class="like-section"><a data-target-id="<?=$contributor['id'] ?>" data-type-like="<?=\Application\Model\Likes::TYPE_LIKE_USER?>" data-status="<?= $this->likes[$contributor['id']][0] ?>"
+                                           class="like btn btn-xs btn-danger col-md-4 col-xs-4">
+                                            <span class="glyphicon glyphicon-thumbs-down"></span> unLike</a></span>
+                                    <?php } ?>
+                                </p>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

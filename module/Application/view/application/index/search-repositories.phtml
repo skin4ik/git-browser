@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="">
+        <?php
+        //print_r($this->searchResult);exit;
+        if ($this->response && count($this->searchResult)) {
+            ?>
+            <h3 class="text-muted">For search term "<?= $this->query; ?>" found:</h3>
+            <?php foreach ($this->searchResult['items'] as $itemOfSearchResult) {
+                ?>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="col-md-12 header-item-result-search">
+                            <div class="col-md-6">
+                                <h4><strong><a href="<?= $this->url('repository-info',
+                                            array('username' => $itemOfSearchResult['owner']['login'],
+                                                'repository'=>$itemOfSearchResult['name']));?>"><?= $itemOfSearchResult['name']; ?></a>
+                                    </strong></h4>
+                            </div>
+                            <div class="col-md-3 search-result-item-link">
+                                <a href="<?= $itemOfSearchResult['homepage']; ?>" target="_blank"><?= $itemOfSearchResult['homepage']; ?></a>
+                            </div>
+                            <div class="col-md-3 search-result-item-link">
+                                <a href="<?= $this->url('user-info', array('login' => $itemOfSearchResult['owner']['login']));?>"><?= $itemOfSearchResult['owner']['login']; ?></a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-12 text-muted description-item-result-search"><em><?= $itemOfSearchResult['description']; ?></em></div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6"><strong>Watchers:</strong> <?= $itemOfSearchResult['watchers']; ?></div>
+                            <div class="col-md-3"><strong>Forks:</strong> <?= $itemOfSearchResult['forks']; ?></div>
+                            <div class="col-md-3">
+                                    <?php if ($this->likes[$itemOfSearchResult['id']][0] == \Application\Model\Likes::STATUS_UNLIKE) { ?>
+                                        <span class="like-section"><a data-target-id="<?=$itemOfSearchResult['id'] ?>" data-type-like="<?=\Application\Model\Likes::TYPE_LIKE_REPOSITORY?>" data-status="<?= $this->likes[$itemOfSearchResult['id']][0] ?>"
+                                                                      class="like btn btn-xs btn-success col-md-4 col-xs-4">
+                                                <span class="glyphicon glyphicon-thumbs-up"></span> Like</a></span>
+                                    <?php } elseif ($this->likes[$itemOfSearchResult['id']][0] == \Application\Model\Likes::STATUS_LIKE) { ?>
+                                        <span class="like-section"><a data-target-id="<?=$itemOfSearchResult['id'] ?>" data-type-like="<?=\Application\Model\Likes::TYPE_LIKE_REPOSITORY?>" data-status="<?= $this->likes[$itemOfSearchResult['id']][0] ?>"
+                                                                      class="like btn btn-xs btn-danger col-md-4 col-xs-4">
+                                                <span class="glyphicon glyphicon-thumbs-down"></span> unLike</a></span>
+                                    <?php } ?>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            <?php
+            }
+            ?>
+
+        <?php } else { ?>
+            <h2>We couldn't find any records matching "<?= $this->query; ?>"</h2>
+        <?php } ?>
+    </div>
+</div>
