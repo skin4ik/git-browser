@@ -14,9 +14,12 @@ class Likes
     public $idTarget;
     public $typeLike;
 
+    /**
+     * @param $data
+     */
     public function exchangeArray($data)
     {
-        $this->id       = (isset($data['id'])) ? $data['id'] : null;
+        $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->idTarget = (isset($data['idTarget'])) ? $data['idTarget'] : null;
         $this->typeLike = (isset($data['typeLike'])) ? $data['typeLike'] : null;
     }

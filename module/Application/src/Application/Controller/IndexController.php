@@ -17,25 +17,26 @@ use Zend\View\Model\JsonModel;
 
 class IndexController extends AbstractActionController
 {
-
+    /**
+     * @var
+     */
     protected $likesTable;
 
+    /**
+     * @return array|ViewModel
+     */
     public function indexAction()
     {
         $client = new Client();
         $repositoryInfo = $client->api('repository')->show('yiisoft', 'yii');
         $contributors = $client->api('repository')->contributors('yiisoft', 'yii');
-        $likes = [];
-        foreach ($contributors as $contributor) {
-            if ($this->getLikesTable()->checkTargetOnLike($contributor['id'], Likes::TYPE_LIKE_USER)) {
-                $likes[$contributor['id']] = [Likes::STATUS_LIKE];
-            } else {
-                $likes[$contributor['id']] = [Likes::STATUS_UNLIKE];
-            }
-        }
+        $likes = $this->getLikesTable()->checkOnLikes($contributors, Likes::TYPE_LIKE_USER);
         return new ViewModel(array('response' => true, 'repositoryInfo' => $repositoryInfo, 'contributors' => $contributors, 'likes' => $likes));
     }
 
+    /**
+     * @return ViewModel
+     */
     public function repositoryInfoAction()
     {
         $username = $this->params()->fromRoute('username');
@@ -45,14 +46,7 @@ class IndexController extends AbstractActionController
             $client = new Client();
             $repositoryInfo = $client->api('repository')->show($username, $repository);
             $contributors = $client->api('repository')->contributors($username, $repository);
-            $likes = [];
-            foreach ($contributors as $contributor) {
-                if ($this->getLikesTable()->checkTargetOnLike($contributor['id'], Likes::TYPE_LIKE_USER)) {
-                    $likes[$contributor['id']] = [Likes::STATUS_LIKE];
-                } else {
-                    $likes[$contributor['id']] = [Likes::STATUS_UNLIKE];
-                }
-            }
+            $likes = $this->getLikesTable()->checkOnLikes($contributors, Likes::TYPE_LIKE_USER);
             return new ViewModel(array('response' => true, 'repositoryInfo' => $repositoryInfo, 'contributors' => $contributors, 'likes' => $likes));
         }
 
@@ -60,20 +54,16 @@ class IndexController extends AbstractActionController
 
     }
 
+    /**
+     * @return ViewModel
+     */
     public function searchRepositoriesAction()
     {
         $query = $this->params()->fromPost('query');
-        $likes = [];
         if ($query) {
             $client = new Client();
             $searchResult = $client->api('search')->repositories($query, 'stars');
-            foreach ($searchResult['items'] as $repository) {
-                if ($this->getLikesTable()->checkTargetOnLike($repository['id'], Likes::TYPE_LIKE_REPOSITORY)) {
-                    $likes[$repository['id']] = [Likes::STATUS_LIKE];
-                } else {
-                    $likes[$repository['id']] = [Likes::STATUS_UNLIKE];
-                }
-            }
+            $likes = $this->getLikesTable()->checkOnLikes($searchResult['items'], Likes::TYPE_LIKE_REPOSITORY);
             if ($searchResult) {
                 return new ViewModel(array('response' => true, 'searchResult' => $searchResult, 'query' => $query, 'likes' => $likes));
             }
@@ -82,6 +72,9 @@ class IndexController extends AbstractActionController
         return new ViewModel(array('response' => false, 'query' => $query));
     }
 
+    /**
+     * @return ViewModel
+     */
     public function userInfoAction()
     {
         $login = $this->params()->fromRoute('login');
@@ -89,14 +82,9 @@ class IndexController extends AbstractActionController
         if ($login) {
             $client = new Client();
             $userInfo = $client->api('user')->show($login);
-            $likes = [];
-            if ($this->getLikesTable()->checkTargetOnLike($userInfo['id'], Likes::TYPE_LIKE_USER)) {
-                $likes[$userInfo['id']] = [Likes::STATUS_LIKE];
-            } else {
-                $likes[$userInfo['id']] = [Likes::STATUS_UNLIKE];
-            }
+            $likes = $this->getLikesTable()->checkOnLikes(array($userInfo), Likes::TYPE_LIKE_USER);
             if ($userInfo) {
-                return new ViewModel(array('response' => true, 'userInfo' => $userInfo, 'likes'=>$likes));
+                return new ViewModel(array('response' => true, 'userInfo' => $userInfo, 'likes' => $likes));
             }
         }
 
@@ -104,7 +92,7 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * @return mixed
+     * @return JsonModel
      */
     public function likeAction()
     {
@@ -119,6 +107,9 @@ class IndexController extends AbstractActionController
         return new JsonModel(array('response' => false));
     }
 
+    /**
+     * @return JsonModel
+     */
     public function unLikeAction()
     {
         $data = $this->params()->fromPost('data');
@@ -130,6 +121,9 @@ class IndexController extends AbstractActionController
         return new JsonModel(array('response' => false));
     }
 
+    /**
+     * @return array|object
+     */
     public function getLikesTable()
     {
         if (!$this->likesTable) {

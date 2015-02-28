@@ -12,6 +12,24 @@ class LikesTable
         $this->tableGateway = $tableGateway;
     }
 
+    /**
+     * @param $items
+     * @param $likeType
+     * @return array
+     */
+    public function checkOnLikes($items, $likeType)
+    {
+        $likes = [];
+        foreach ($items as $item) {
+            if ($this->checkTargetOnLike($item['id'], $likeType)) {
+                $likes[$item['id']] = [Likes::STATUS_LIKE];
+            } else {
+                $likes[$item['id']] = [Likes::STATUS_UNLIKE];
+            }
+        }
+        return $likes;
+    }
+
     public function checkTargetOnLike($idTarget, $typeLike)
     {
         $idTarget = (int)$idTarget;
